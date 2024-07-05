@@ -1,6 +1,5 @@
 "use client";
 
-
 import axios from "axios";
 import { 
   useCallback, 
@@ -17,6 +16,7 @@ import Button from "@/app/components/Button";
 import Input from "@/app/components/input/Input";
 import AuthSocialButton from "./AuthSocialButton";
 import toast from "react-hot-toast";
+import { signIn } from "next-auth/react";
 
 type Variant = 'LOGIN' | 'REGISTER'
 const AuthForm = () => {
@@ -51,12 +51,27 @@ const AuthForm = () => {
     if(variant === 'REGISTER') {
       // axios register
       axios.post('/api/register', data)
-      .catch((err) => toast.error('Something went wrong'))
-      .finally(() => setIsLoading(false))
+      .catch(() => toast.error('Something went wrong'))
+      .finally(() => setIsLoading(false));
     }
 
     if(variant === 'LOGIN') {
       // nextauth signin
+      signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password
+      })
+      .then((res) => {
+        if(res?.error) {
+          toast.error('Invalid credentials');
+        }
+        
+        if(res?.ok) {
+          toast.success('Logged in successfully');
+        }
+      })
+      .finally(() => setIsLoading(false));
     }
   }
 
@@ -64,6 +79,19 @@ const AuthForm = () => {
     setIsLoading(true);
 
     //nextauth social signin
+    signIn(action, {
+      redirect: false
+    })
+    .then((res) => {
+      if(res?.error) {
+        toast.error('Something went wrong');
+      }
+
+      if(res?.ok) {
+        toast.success('Logged in successfully');
+      }
+    })
+    .finally(() => setIsLoading(false));
   }
 
   return (
@@ -93,7 +121,7 @@ const AuthForm = () => {
             <Input 
               label="Name" 
               id="name" 
-              // required
+              required
               register={register} 
               errors={errors}
               disabled={isLoading}
@@ -103,7 +131,7 @@ const AuthForm = () => {
             label="Email address" 
             id="email" 
             type="email" 
-            // required
+            required
             register={register} 
             errors={errors}
             disabled={isLoading}
@@ -112,7 +140,7 @@ const AuthForm = () => {
             label="Password" 
             id="password" 
             type="password" 
-            // required
+            required
             register={register} 
             errors={errors}
             disabled={isLoading}
