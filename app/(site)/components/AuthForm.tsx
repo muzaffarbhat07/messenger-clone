@@ -16,6 +16,7 @@ import { BsGithub, BsGoogle } from "react-icons/bs";
 import Button from "@/app/components/Button";
 import Input from "@/app/components/input/Input";
 import AuthSocialButton from "./AuthSocialButton";
+import toast from "react-hot-toast";
 
 type Variant = 'LOGIN' | 'REGISTER'
 const AuthForm = () => {
@@ -49,8 +50,9 @@ const AuthForm = () => {
 
     if(variant === 'REGISTER') {
       // axios register
-      console.log('register...')
-      axios.post('/api/register', data);
+      axios.post('/api/register', data)
+      .catch((err) => toast.error('Something went wrong'))
+      .finally(() => setIsLoading(false))
     }
 
     if(variant === 'LOGIN') {
@@ -91,7 +93,7 @@ const AuthForm = () => {
             <Input 
               label="Name" 
               id="name" 
-              required
+              // required
               register={register} 
               errors={errors}
               disabled={isLoading}
@@ -101,7 +103,7 @@ const AuthForm = () => {
             label="Email address" 
             id="email" 
             type="email" 
-            required
+            // required
             register={register} 
             errors={errors}
             disabled={isLoading}
@@ -110,7 +112,7 @@ const AuthForm = () => {
             label="Password" 
             id="password" 
             type="password" 
-            required
+            // required
             register={register} 
             errors={errors}
             disabled={isLoading}
