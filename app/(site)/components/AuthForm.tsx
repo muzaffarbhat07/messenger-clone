@@ -1,6 +1,7 @@
 "use client";
 
 
+import axios from "axios";
 import { 
   useCallback, 
   useState 
@@ -48,6 +49,8 @@ const AuthForm = () => {
 
     if(variant === 'REGISTER') {
       // axios register
+      console.log('register...')
+      axios.post('/api/register', data);
     }
 
     if(variant === 'LOGIN') {
