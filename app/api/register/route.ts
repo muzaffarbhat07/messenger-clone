@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import prisma from '../libs/prismadb';
+import prisma from '../../libs/prismadb';
 import { NextResponse } from 'next/server';
 
 export async function POST (request: Request) {
@@ -16,7 +16,7 @@ export async function POST (request: Request) {
       }
     });
     if(existingUser) {
-      return new NextResponse('user with this email already exists', { status: 400 });
+      return new NextResponse('User with this email already exists', { status: 400 });
     }
   
     const hashedPassword = await bcrypt.hash(password, 12);
